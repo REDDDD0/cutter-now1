@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us - Cutter Now</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* Base styles */
+    .page-wrapper {
+        display: flex;
+        flex-direction: row;
+        min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-image: url('https://hdwallpapersfor.com/products/abstract-desktop.jpg-1.jpg'); 
+        background-size: cover; 
+        background-position: center center; 
+        background-repeat: no-repeat; 
+        background-attachment: fixed; 
+        background-color: #0d0d1a;
+        color: #f0f0f0;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100vh;
+        background-color: #1a1a2e;
+        transition: left 0.3s ease;
+        z-index: 1000;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+    }
+
+    .sidebar.visible {
+        left: 0;
+    }
+
+    .sidebar-header {
+        padding: 1rem;
+        background-color: #16213e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+    }
+
+    .sidebar-header h2 {
+        margin: 0;
+        color: #00ffcc;
+        font-size: 1.4rem;
+    }
+
+    .toggle-sidebar-btn {
+        background: none;
+        border: none;
+        color: #00ffcc;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 3px;
+        transition: background-color 0.2s ease;
+    }
+
+    .toggle-sidebar-btn:hover {
+        background-color: rgba(0, 255, 204, 0.1);
+    }
+
+    .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-nav li {
+        border-bottom: 1px solid #333;
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        color: #f0f0f0;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .sidebar-link:hover {
+        background-color: #2a2a3e;
+        color: #00ffcc;
+    }
+
+    .sidebar-link.active {
+        background-color: #00ffcc;
+        color: #1a1a2e;
+        font-weight: bold;
+    }
+
+    .sidebar-link i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+    }
+
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001;
+        background-color: #00ffcc;
+        color: #1a1a2e;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        transition: background-color 0.2s ease;
+    }
+
+    .mobile-menu-btn:hover {
+        background-color: #00ccaa;
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        padding: 80px 20px 20px 20px;
+        transition: margin-left 0.3s ease;
+        min-height: 100vh;
+    }
+
+    .main-content.sidebar-visible {
+        margin-left: 250px;
+    }
+
+    /* Container */
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: rgba(26, 26, 46, 0.9);
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 0.5em;
+        color: #00ffcc;
+        text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        text-align: center;
+    }
+
+    h2 {
+        color: #00ffcc;
+        font-size: 1.5em;
+        margin-top: 2em;
+        margin-bottom: 1em;
+        border-bottom: 2px solid #00ffcc;
+        padding-bottom: 0.5em;
+    }
+
+    p {
+        line-height: 1.6;
+        margin-bottom: 1.5em;
+        color: #e0e0e0;
+        font-size: 1.1em;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .feature-card {
+        background-color: #1f1f2f;
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #333;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 255, 204, 0.1);
+    }
+
+    .feature-card i {
+        font-size: 3em;
+        color: #00ffcc;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        color: #00ffcc;
+        margin-bottom: 1rem;
+    }
+
+    .stats-container {
+        display: flex;
+        justify-content: space-around;
+        margin: 2rem 0;
+        background-color: #1f1f2f;
+        padding: 2rem;
+        border-radius: 10px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #00ffcc;
+        display: block;
+    }
+
+    .stat-label {
+        color: #ccc;
+        font-size: 0.9em;
+        margin-top: 0.5rem;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 100%;
+            left: -100%;
+        }
+        
+        .sidebar.visible {
+            left: 0;
+        }
+        
+        .main-content.sidebar-visible {
+            margin-left: 0;
+        }
+        
+        .container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        h1 {
+            font-size: 2em;
+        }
+
+        .stats-container {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .feature-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <div class="page-wrapper">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+              <h2>Menu</h2>
+              <button class="toggle-sidebar-btn" id="toggleSidebarBtn">
+                  <i class="fas fa-times"></i>
+              </button>
+          </div>
+          <nav class="sidebar-nav">
+              <ul>
+                  <li><a href="index.html" class="sidebar-link"> <i class="fas fa-home"></i> Home</a></li>
+                  <li><a href="about.html" class="sidebar-link active"> <i class="fas fa-info-circle"></i> About Us</a></li>
+                  <li><a href="contact.html" class="sidebar-link"> <i class="fas fa-envelope"></i> Contact Us</a></li>
+                  <li><a href="faq.html" class="sidebar-link"> <i class="fas fa-question-circle"></i> Q&A</a></li>
+              </ul>
+          </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content" id="mainContent">
+          <div class="container">
+              <h1>About Cutter Now</h1>
+              
+              <p>Welcome to Cutter Now, your ultimate solution for downloading and trimming YouTube videos with ease. We've created this platform to provide users with a fast, reliable, and user-friendly way to extract the exact content they need from YouTube videos.</p>
+
+              <h2>Our Mission</h2>
+              <p>Our mission is to empower content creators, students, researchers, and everyday users with the tools they need to access and utilize video content efficiently. We believe that everyone should have the ability to save and customize video content for educational, creative, and personal purposes.</p>
+
+              <div class="feature-grid">
+                  <div class="feature-card">
+                      <i class="fas fa-cut"></i>
+                      <h3>Precise Trimming</h3>
+                      <p>Cut videos to exact timestamps with our intuitive trimming tools. Save only what you need.</p>
+                  </div>
+                  <div class="feature-card">
+                      <i class="fas fa-download"></i>
+                      <h3>Multiple Formats</h3>
+                      <p>Download in MP3 for audio or MP4 for video in various quality options to suit your needs.</p>
+                  </div>
+                  <div class="feature-card">
+                      <i class="fas fa-bolt"></i>
+                      <h3>Lightning Fast</h3>
+                      <p>Our optimized servers ensure quick processing and downloading of your content.</p>
+                  </div>
+                  <div class="feature-card">
+                      <i class="fas fa-shield-alt"></i>
+                      <h3>Safe & Secure</h3>
+                      <p>We prioritize your privacy and security. No personal information is stored or shared.</p>
+                  </div>
+              </div>
+
+              <h2>Why Choose Cutter Now?</h2>
+              <p>In a world filled with video content, we understand the need for flexibility and efficiency. Whether you're a student creating study materials, a content creator working on projects, or someone who simply wants to save memorable moments from videos, Cutter Now provides the perfect solution.</p>
+
+              <div class="stats-container">
+                  <div class="stat-item">
+                      <span class="stat-number">50K+</span>
+                      <div class="stat-label">Videos Processed</div>
+                  </div>
+                  <div class="stat-item">
+                      <span class="stat-number">99.9%</span>
+                      <div class="stat-label">Uptime</div>
+                  </div>
+                  <div class="stat-item">
+                      <span class="stat-number">24/7</span>
+                      <div class="stat-label">Availability</div>
+                  </div>
+              </div>
+
+              <h2>Our Commitment</h2>
+              <p>We are committed to providing a service that respects copyright laws and fair use policies. We encourage our users to download content responsibly and in accordance with YouTube's terms of service and applicable copyright regulations.</p>
+
+              <p>Our team continuously works to improve the platform, ensuring compatibility with the latest video formats and maintaining the highest standards of performance and reliability.</p>
+
+              <h2>Looking Forward</h2>
+              <p>As we continue to grow, we're constantly working on new features and improvements based on user feedback. Our goal is to remain the most trusted and efficient platform for video processing and downloading.</p>
+
+              <p>Thank you for choosing Cutter Now. We're here to make your video downloading experience as smooth and efficient as possible.</p>
+          </div>
+      </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Sidebar functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('visible');
+            mainContent.classList.toggle('sidebar-visible');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+        toggleSidebarBtn.addEventListener('click', toggleSidebar);
+
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && 
+                sidebar.classList.contains('visible') && 
+                !sidebar.contains(e.target) && 
+                !mobileMenuBtn.contains(e.target)) {
+                toggleSidebar();
+            }
+        });
+    });
+  </script>
+  <!-- Ko-fi Support Widget -->
+  <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+  <script>
+    kofiWidgetOverlay.draw('redddd0', {
+      'type': 'floating-chat',
+      'floating-chat.donateButton.text': 'Support me',
+      'floating-chat.donateButton.background-color': '#fcbf47',
+      'floating-chat.donateButton.text-color': '#323842'
+    });
+  </script>
+
+
+</body>
+</html>

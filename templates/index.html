@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cutter Now</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* Base styles */
+    .page-wrapper {
+        display: flex;
+        flex-direction: row;
+        min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-image: url('https://hdwallpapersfor.com/products/abstract-desktop.jpg-1.jpg'); 
+        background-size: cover; 
+        background-position: center center; 
+        background-repeat: no-repeat; 
+        background-attachment: fixed; 
+        background-color: #0d0d1a;
+        color: #f0f0f0;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100vh;
+        background-color: #1a1a2e;
+        transition: left 0.3s ease;
+        z-index: 1000;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+    }
+
+    .sidebar.visible {
+        left: 0;
+    }
+
+    .sidebar-header {
+        padding: 1rem;
+        background-color: #16213e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+    }
+
+    .sidebar-header h2 {
+        margin: 0;
+        color: #00ffcc;
+        font-size: 1.4rem;
+    }
+
+    .toggle-sidebar-btn {
+        background: none;
+        border: none;
+        color: #00ffcc;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 3px;
+        transition: background-color 0.2s ease;
+    }
+
+    .toggle-sidebar-btn:hover {
+        background-color: rgba(0, 255, 204, 0.1);
+    }
+
+    .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-nav li {
+        border-bottom: 1px solid #333;
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        color: #f0f0f0;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .sidebar-link:hover {
+        background-color: #2a2a3e;
+        color: #00ffcc;
+    }
+
+    .sidebar-link.active {
+        background-color: #00ffcc;
+        color: #1a1a2e;
+        font-weight: bold;
+    }
+
+    .sidebar-link i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+    }
+
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001;
+        background-color: #00ffcc;
+        color: #1a1a2e;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        transition: background-color 0.2s ease;
+    }
+
+    .mobile-menu-btn:hover {
+        background-color: #00ccaa;
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        padding: 0;
+        transition: margin-left 0.3s ease;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .main-content.sidebar-visible {
+        margin-left: 250px;
+    }
+
+    /* Container */
+    .container {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: rgba(26, 26, 46, 0.9);
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+    }
+
+    h1 {
+        font-size: 3em;
+        margin-bottom: 0.3em;
+        color: #00ffcc;
+        text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+    }
+
+    .subtitle {
+        margin-bottom: 2em;
+        color: #ccc;
+        font-size: 1.1rem;
+    }
+
+    /* Download Section */
+    .download-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .download-section input[type="url"],
+    .download-section button {
+        padding: 12px;
+        margin: 5px 0;
+        border-radius: 8px;
+        border: none;
+        background-color: #2a2a3e;
+        color: white;
+        outline: none;
+        font-size: 1rem;
+        box-sizing: border-box;
+    }
+
+    .download-section input[type="url"] {
+        width: 100%;
+        border: 2px solid transparent;
+        transition: border-color 0.2s ease;
+    }
+
+    .download-section input[type="url"]:focus {
+        border-color: #00ffcc;
+    }
+
+    #get-formats-btn {
+        background-color: #00ffcc;
+        color: #000;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: auto;
+        padding: 12px 24px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: bold;
+    }
+
+    #get-formats-btn:hover:not(:disabled) {
+        background-color: #00ccaa;
+    }
+
+    #get-formats-btn:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+        color: #bbb;
+    }
+
+    /* Video Preview Section */
+    .video-preview-box {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        background-color: #1f1f2f;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    #video-thumbnail {
+        width: 100%;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+    }
+
+    #video-title {
+        color: #00ffcc;
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+    }
+
+    #video-duration {
+        color: #bbb;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Format Selection */
+    .format-selection-box {
+        background-color: #1f1f2f;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .quality-selection {
+        margin-bottom: 1rem;
+    }
+
+    .quality-selection label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #00ffcc;
+        font-weight: bold;
+    }
+
+    .quality-selection select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #444;
+        background-color: #2a2a3e;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .format-options {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+    }
+
+    .format-options label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 1.1rem;
+    }
+
+    .format-options input[type="radio"] {
+        accent-color: #00ffcc;
+    }
+
+    /* Trimming Section */
+    .trimming-section {
+        background-color: #1f1f2f;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .section-title {
+        color: #00ffcc;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .trim-info {
+        color: #bbb;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .time-inputs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .time-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .time-group label {
+        margin-bottom: 0.5rem;
+        color: #00ffcc;
+        font-size: 0.9rem;
+    }
+
+    .time-group input {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #444;
+        background-color: #2a2a3e;
+        color: white;
+        text-align: center;
+    }
+
+    .reset-time-btn {
+        background: none;
+        border: none;
+        color: #f0ad4e;
+        cursor: pointer;
+        font-size: 0.8rem;
+        padding: 5px;
+        margin-top: 5px;
+        transition: color 0.2s ease;
+    }
+
+    .reset-time-btn:hover {
+        color: #ffd700;
+    }
+
+    #time-range-slider {
+        width: 100%;
+        margin: 1rem 0;
+        accent-color: #00ffcc;
+    }
+
+    .time-fields {
+        text-align: center;
+        color: #bbb;
+        font-size: 0.9rem;
+    }
+
+    /* Download Button */
+    #start-download-btn {
+        background-color: #00ffcc;
+        color: #000;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: none;
+    }
+
+    #start-download-btn:hover:not(:disabled) {
+        background-color: #00ccaa;
+    }
+
+    #start-download-btn:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+        color: #bbb;
+    }
+
+    /* Progress Section */
+    .download-progress-section {
+        background-color: #1f1f2f;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .download-progress-section p {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        color: #00ffcc;
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        background-color: #2a2a3e;
+        border-radius: 5px;
+        height: 15px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background-color: #00ffcc;
+        width: 0%;
+        border-radius: 5px;
+        transition: width 0.5s ease-in-out;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 100%;
+            left: -100%;
+        }
+        
+        .sidebar.visible {
+            left: 0;
+        }
+        
+        .main-content.sidebar-visible {
+            margin-left: 0;
+        }
+        
+        .container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        h1 {
+            font-size: 2.2em;
+        }
+        
+        .time-inputs {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .format-options {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <div class="page-wrapper">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+              <h2>Menu</h2>
+              <button class="toggle-sidebar-btn" id="toggleSidebarBtn">
+                  <i class="fas fa-times"></i>
+              </button>
+          </div>
+          <nav class="sidebar-nav">
+              <ul>
+                  <li><a href="index.html" class="sidebar-link active"> <i class="fas fa-home"></i> Home</a></li>
+                  <li><a href="about.html" class="sidebar-link"> <i class="fas fa-info-circle"></i> About Us</a></li>
+                  <li><a href="contact.html" class="sidebar-link"> <i class="fas fa-envelope"></i> Contact Us</a></li>
+                  <li><a href="faq.html" class="sidebar-link"> <i class="fas fa-question-circle"></i> Q&A</a></li>
+              </ul>
+          </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content" id="mainContent">
+          <div class="container">
+              <header>
+                  <h1>Cutter Now</h1>
+                  <p class="subtitle">Cut and download any YouTube video in MP3 or MP4</p>
+              </header>
+
+              <div class="download-section">
+                  <input type="url" id="url" placeholder="Paste YouTube link here..." required />
+                  <button id="get-formats-btn"><i class="fas fa-search"></i> Get Formats</button>
+
+                  <div id="video-preview-box" class="video-preview-box" style="display: none;">
+                      <img id="video-thumbnail" src="" alt="Video Thumbnail">
+                      <h3 id="video-title"></h3>
+                      <p id="video-duration"></p>
+                  </div>
+
+                  <div id="format-selection-box" class="format-selection-box" style="display: none;">
+                      <div class="quality-selection">
+                          <label for="quality-select">Select Quality:</label>
+                          <select id="quality-select"></select>
+                      </div>
+                      <div class="format-options">
+                          <label>
+                              <input type="radio" name="download-format" value="mp4" checked> MP4
+                          </label>
+                          <label>
+                              <input type="radio" name="download-format" value="mp3"> MP3
+                          </label>
+                      </div>
+                  </div>
+
+                  <!-- Video Trimming Section -->
+                  <div id="trimming-section" class="trimming-section" style="display: none;">
+                      <h3 class="section-title">Trim Video (Optional)</h3>
+                      <p class="trim-info">Set start and end times for your download.</p>
+
+                      <div class="time-inputs">
+                          <div class="time-group">
+                              <label for="start-time-input">Start Time:</label>
+                              <input type="text" id="start-time-input" placeholder="00:00:00" data-target="start">
+                              <button class="reset-time-btn" data-target="start"><i class="fas fa-redo"></i></button>
+                          </div>
+                          <div class="time-group">
+                              <label for="end-time-input">End Time:</label>
+                              <input type="text" id="end-time-input" placeholder="00:00:00" data-target="end">
+                              <button class="reset-time-btn" data-target="end"><i class="fas fa-redo"></i></button>
+                          </div>
+                      </div>
+
+                      <input type="range" id="time-range-slider" min="0" max="0" value="0" step="1">
+
+                      <div class="time-fields">
+                          <span id="current-time">00:00</span> / <span id="duration-display">00:00</span>
+                      </div>
+                  </div>
+
+                  <button id="start-download-btn" style="display: none;"><i class="fas fa-download"></i> Download Selected</button>
+              </div>
+          </div>
+      </main>
+  </div>
+
+  <!-- Download Progress Section -->
+  <div id="download-progress-section" class="download-progress-section" style="display: none;">
+      <p id="download-status-text">Starting download...</p>
+      <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%;"></div>
+      </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Sidebar functionality ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('visible');
+            mainContent.classList.toggle('sidebar-visible');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+        toggleSidebarBtn.addEventListener('click', toggleSidebar);
+
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && 
+                sidebar.classList.contains('visible') && 
+                !sidebar.contains(e.target) && 
+                !mobileMenuBtn.contains(e.target)) {
+                toggleSidebar();
+            }
+        });
+
+        // --- Video Download Functionality ---
+        const urlInput = document.getElementById('url');
+        const getFormatsBtn = document.getElementById('get-formats-btn');
+        const videoPreviewBox = document.getElementById('video-preview-box');
+        const videoThumbnail = document.getElementById('video-thumbnail');
+        const videoTitle = document.getElementById('video-title');
+        const videoDuration = document.getElementById('video-duration');
+        const formatSelectionBox = document.getElementById('format-selection-box');
+        const qualitySelect = document.getElementById('quality-select');
+        const trimmingSection = document.getElementById('trimming-section');
+        const startTimeInput = document.getElementById('start-time-input');
+        const endTimeInput = document.getElementById('end-time-input');
+        const timeRangeSlider = document.getElementById('time-range-slider');
+        const currentTime = document.getElementById('current-time');
+        const durationDisplay = document.getElementById('duration-display');
+        const startDownloadBtn = document.getElementById('start-download-btn');
+        const downloadProgressSection = document.getElementById('download-progress-section');
+        const downloadStatusText = document.getElementById('download-status-text');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+
+        let videoFullDuration = 0;
+        let currentSelectedFormat = null;
+        let videoFormatsData = {};
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return [h, m, s]
+                .map(v => v < 10 ? '0' + v : v)
+                .join(':');
+        }
+
+        function parseTime(timeString) {
+            if (!timeString) return 0;
+            const parts = timeString.split(':').map(Number);
+            if (parts.length === 3) {
+                return parts[0] * 3600 + parts[1] * 60 + parts[2];
+            } else if (parts.length === 2) {
+                return parts[0] * 60 + parts[1];
+            }
+            return 0;
+        }
+
+        function validateTimes() {
+            let start = parseTime(startTimeInput.value);
+            let end = parseTime(endTimeInput.value);
+
+            if (start < 0) start = 0;
+            if (end > videoFullDuration) end = videoFullDuration;
+            if (start > end) start = end;
+
+            startTimeInput.value = formatTime(start);
+            endTimeInput.value = formatTime(end);
+            currentTime.textContent = formatTime(start);
+        }
+
+        function hideAllSections() {
+            videoPreviewBox.style.display = 'none';
+            formatSelectionBox.style.display = 'none';
+            trimmingSection.style.display = 'none';
+            downloadProgressSection.style.display = 'none';
+            startDownloadBtn.style.display = 'none';
+        }
+
+        // Get Formats Button Event
+        getFormatsBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) {
+                alert('Please enter a YouTube video URL.');
+                return;
+            }
+
+            getFormatsBtn.disabled = true;
+            getFormatsBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting Info...';
+            hideAllSections();
+
+            try {
+                console.log('Sending request to get video info...');
+                const response = await fetch('/get_video_info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (response.ok) {
+                    // Display video info
+                    videoTitle.textContent = data.title;
+                    videoThumbnail.src = data.thumbnail;
+                    videoThumbnail.alt = data.title;
+                    videoFullDuration = data.duration;
+                    
+                    // Display duration
+                    videoDuration.textContent = `Duration: ${formatTime(videoFullDuration)}`;
+                    durationDisplay.textContent = formatTime(videoFullDuration);
+                    
+                    // Setup trimming controls
+                    timeRangeSlider.max = videoFullDuration;
+                    startTimeInput.value = formatTime(0);
+                    endTimeInput.value = formatTime(videoFullDuration);
+
+                    // Clear and populate formats
+                    videoFormatsData = {};
+                    qualitySelect.innerHTML = '';
+                    
+                    data.formats.forEach(f => {
+                        videoFormatsData[f.quality] = {
+                            format_id: f.id,
+                            ext: f.format_type,
+                            is_video_only: f.is_video_only
+                        };
+
+                        const option = document.createElement('option');
+                        option.value = f.quality;
+                        option.textContent = `${f.quality} (${f.fileSize})`;
+                        qualitySelect.appendChild(option);
+                    });
+
+                    if (qualitySelect.options.length > 0) {
+                        qualitySelect.value = qualitySelect.options[0].value;
+                        currentSelectedFormat = videoFormatsData[qualitySelect.value];
+                    }
+
+                    // Show sections
+                    videoPreviewBox.style.display = 'block';
+                    formatSelectionBox.style.display = 'block';
+                    trimmingSection.style.display = 'block';
+                    startDownloadBtn.style.display = 'block';
+                } else {
+                    alert(`Error: ${data.error}`);
+                }
+            } catch (error) {
+                console.error('Error fetching video info:', error);
+                alert('An error occurred while fetching video information. Please check the console for details.');
+            } finally {
+                getFormatsBtn.disabled = false;
+                getFormatsBtn.innerHTML = '<i class="fas fa-search"></i> Get Formats';
+            }
+        });
+
+        // Quality selection change
+        qualitySelect.addEventListener('change', () => {
+            currentSelectedFormat = videoFormatsData[qualitySelect.value];
+        });
+
+        // Time input validation
+        startTimeInput.addEventListener('input', validateTimes);
+        endTimeInput.addEventListener('input', validateTimes);
+
+        // Time range slider
+        timeRangeSlider.addEventListener('input', () => {
+            const sliderValue = parseInt(timeRangeSlider.value);
+            startTimeInput.value = formatTime(sliderValue);
+            validateTimes();
+        });
+
+        // Reset time buttons
+        document.querySelectorAll('.reset-time-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const target = button.dataset.target;
+                if (target === 'start') {
+                    startTimeInput.value = formatTime(0);
+                } else if (target === 'end') {
+                    endTimeInput.value = formatTime(videoFullDuration);
+                }
+                validateTimes();
+            });
+        });
+
+        // Download button
+        startDownloadBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            const format = document.querySelector('input[name="download-format"]:checked').value;
+            const startTime = startTimeInput.value;
+            const endTime = endTimeInput.value;
+
+            if (!url || !currentSelectedFormat) {
+                alert('Please get video formats first.');
+                return;
+            }
+
+            startDownloadBtn.disabled = true;
+            startDownloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+            downloadProgressSection.style.display = 'block';
+            downloadStatusText.textContent = 'Starting download...';
+            progressBarFill.style.width = '0%';
+
+            try {
+                console.log('Sending download request...');
+                const response = await fetch('/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        format_id: currentSelectedFormat.format_id,
+                        download_format: format,
+                        is_video_only: currentSelectedFormat.is_video_only,
+                        start_time: startTime,
+                        end_time: endTime
+                    })
+                });
+
+                console.log('Download response status:', response.status);
+
+                if (response.ok && response.headers.get("content-type")?.includes("application/json")) {
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        downloadStatusText.textContent = "Download complete!";
+                        progressBarFill.style.width = '100%';
+                    } else {
+                        throw new Error(data.error || 'Download failed');
+                    }
+                } else if (response.ok) {
+                    // File download
+                    const blob = await response.blob();
+                    const disposition = response.headers.get('Content-Disposition');
+                    let filename = 'download';
+                    
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        const matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = decodeURIComponent(matches[1].replace(/['"]/g, ''));
+                        }
+                    }
+                    
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+
+                    downloadStatusText.textContent = "Download complete!";
+                    progressBarFill.style.width = '100%';
+                    
+                    setTimeout(() => {
+                        downloadProgressSection.style.display = 'none';
+                    }, 2000);
+                } else {
+                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    throw new Error(errorData.error || 'Download failed');
+                }
+            } catch (error) {
+                console.error("Error during download:", error);
+                downloadStatusText.textContent = `Download failed: ${error.message}`;
+                progressBarFill.style.width = '0%';
+                alert(`Download failed: ${error.message}`);
+            } finally {
+                startDownloadBtn.disabled = false;
+                startDownloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Selected';
+            }
+        });
+    });
+  </script>
+
+  <!-- Ko-fi Support Widget -->
+  <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+  <script>
+    kofiWidgetOverlay.draw('redddd0', {
+      'type': 'floating-chat',
+      'floating-chat.donateButton.text': 'Support me',
+      'floating-chat.donateButton.background-color': '#fcbf47',
+      'floating-chat.donateButton.text-color': '#323842'
+    });
+  </script>
+
+</body>
+</html>
